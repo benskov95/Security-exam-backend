@@ -31,7 +31,7 @@ public class CategoryResource {
     }
     
     @POST
-    // @RolesAllowed("admin")
+    @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public String addCategory(String category) throws AlreadyExists {
@@ -41,7 +41,7 @@ public class CategoryResource {
     }
     
     @DELETE
-    // @RolesAllowed("admin")
+    @RolesAllowed("admin")
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
     public String deleteCategory(@PathParam("id") int id) throws errorhandling.NotFound {
@@ -50,7 +50,7 @@ public class CategoryResource {
     }
     
     @PUT
-    // @RolesAllowed("admin")
+    @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public String updateCategory(String category) throws errorhandling.NotFound {
