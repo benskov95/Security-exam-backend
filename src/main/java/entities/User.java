@@ -31,6 +31,12 @@ public class User implements Serializable {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
   @ManyToMany (cascade = CascadeType.PERSIST)
   private List<Role> roleList = new ArrayList<>();
+  
+  @OneToMany(mappedBy = "user")
+  private List<CatThread> threads = new ArrayList<>();
+    
+  @OneToMany(mappedBy = "user")
+  private List<Post> posts = new ArrayList<>();
 
   public List<String> getRolesAsStrings() {
     if (roleList.isEmpty()) {
@@ -84,5 +90,21 @@ public class User implements Serializable {
   public void addRole(Role userRole) {
     roleList.add(userRole);
   }
+
+    public List<CatThread> getThreads() {
+        return threads;
+    }
+
+    public void setThreads(List<CatThread> threads) {
+        this.threads = threads;
+    }
+
+    public List<Post> getPosts() {
+        return posts;
+    }
+
+    public void setPosts(List<Post> posts) {
+        this.posts = posts;
+    }
 
 }
