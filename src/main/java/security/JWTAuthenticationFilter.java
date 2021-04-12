@@ -34,7 +34,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
  @Context
  private ResourceInfo resourceInfo;
 
- @Override   
+ @Override
  public void filter(ContainerRequestContext request) throws IOException {
    if (isSecuredResource()) {
 
@@ -69,7 +69,7 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
    return false;
  }
 
- private UserPrincipal getUserPrincipalFromTokenIfValid(String token)
+ public UserPrincipal getUserPrincipalFromTokenIfValid(String token)
          throws ParseException, JOSEException, AuthenticationException {
    SignedJWT signedJWT = SignedJWT.parse(token);
    //Is it a valid token (generated with our shared key)
@@ -79,12 +79,12 @@ public class JWTAuthenticationFilter implements ContainerRequestFilter {
      if (new Date().getTime() > signedJWT.getJWTClaimsSet().getExpirationTime().getTime()) {
        throw new AuthenticationException("Your Token is no longer valid");
      }
-     String roles = signedJWT.getJWTClaimsSet().getClaim("roles").toString();
+     String role = signedJWT.getJWTClaimsSet().getClaim("role").toString();
      String username = signedJWT.getJWTClaimsSet().getClaim("username").toString();
-     
-     String[] rolesArray = roles.split(",");
-     
-     return new UserPrincipal(username, rolesArray);
+     String email = signedJWT.getJWTClaimsSet().getClaim("email").toString();
+
+
+     return new UserPrincipal(username, role, email);
 //     return new UserPrincipal(username, roles);
    } else {
      throw new JOSEException("User could not be extracted from token");

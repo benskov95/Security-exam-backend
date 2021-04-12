@@ -73,19 +73,17 @@ public class UserResourceTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        user = new User("user", "test123");
-        admin = new User("admin", "test123");
-        both = new User("user_admin", "test123");
+        user = new User("test@mail.dk","user", "test123");
+        admin = new User("test@mail.dk","admin", "test123");
+        both = new User("test@mail.dk","user_admin", "test123");
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            user.addRole(userRole);
-            admin.addRole(adminRole);
-            both.addRole(userRole);
-            both.addRole(adminRole);
+            user.setRole(userRole);
+            admin.setRole(adminRole);
             em.persist(userRole);
             em.persist(adminRole);
             em.persist(user);
@@ -149,7 +147,7 @@ public class UserResourceTest {
 
     @Test
     public void testAddUser(){
-        User newUser = new User("test", "test");
+        User newUser = new User("test@mail.dk","test", "test");
         UserDTO newUserDTO = new UserDTO(newUser);
 
         given()

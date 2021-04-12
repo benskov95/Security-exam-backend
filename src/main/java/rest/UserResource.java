@@ -2,7 +2,9 @@ package rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.nimbusds.jose.JOSEException;
 import dto.UserDTO;
+import entities.User;
 import facades.UserFacade;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -11,6 +13,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -21,15 +24,28 @@ public class UserResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
-            
+
 
     @GET
+    @RolesAllowed("user")
     @Path("count")
     @Produces({MediaType.APPLICATION_JSON})
     public String getNumberOfUsers() {
         int numberOfUsers = USER_FACADE.getAllUsers().size();
         return "{\"count\":" + numberOfUsers + "}";
     }
+    @GET
+    @Path("me")
+    @RolesAllowed("user")
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes({MediaType.APPLICATION_JSON})
+    public String getUser(String token) throws ParseException, JOSEException, AuthenticationException {
+        UserDTO userDTO = USER_FACADE.getUser(token);
+
+        return GSON.toJson(userDTO);
+    }
+
+
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
@@ -38,7 +54,7 @@ public class UserResource {
         UserDTO newUser = USER_FACADE.addUser(userDTO);
         return GSON.toJson(newUser);
     }
-    
+
     @GET
     @RolesAllowed("admin")
     @Produces({MediaType.APPLICATION_JSON})
