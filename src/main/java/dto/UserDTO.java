@@ -10,12 +10,11 @@ public class UserDTO {
     private String username;
     private String role;
     private String password;
-
+    private String oldPassword;
 
     public UserDTO(User user) {
         this.email = user.getEmail();
         this.username = user.getUsername();
-        this.role = user.getRole().getRoleName();
     }
 
 
@@ -29,6 +28,13 @@ public class UserDTO {
         this.password = password;
     }
 
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
 
     public String getUsername() {
         return username;

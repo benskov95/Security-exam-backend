@@ -135,6 +135,14 @@ public class UserFacade {
             }
         }
     }
+    private void checkIfUsernameExists (String username, EntityManager em) throws AuthenticationException {
+
+        Query query = em.createQuery("SELECT u FROM User u where u.username = :username");
+        query.setParameter("username", username);
+        if(query.getResultList().size() > 0) {
+            throw new AuthenticationException("This username is already in use!");
+        }
+    }
 
 
 
@@ -152,4 +160,31 @@ public class UserFacade {
         return em.find(Role.class,"user");
     }
 
+    public UserDTO editUser(String email, UserDTO userDTO) throws AuthenticationException, NotFound {
+        EntityManager em = emf.createEntityManager();
+
+        User user = em.find(User.class,email);
+        if (user == null){
+            throw new NotFound("User not found");
+        }
+
+        user.setUsername(userDTO.getUsername());
+
+        checkIfUsernameExists(user.getUsername(), em);
+
+        if(!userDTO.getPassword().equals("")){
+            user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
+        }
+
+        try {
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            return new UserDTO(user);
+        }finally {
+            em.close();
+
+        }
+
+    }
 }

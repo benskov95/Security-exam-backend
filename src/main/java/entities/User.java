@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.mindrot.jbcrypt.BCrypt;
+import security.errorhandling.AuthenticationException;
 
 @Entity
 @NamedQuery (name = "User.deleteAllRows", query = "DELETE FROM User")
@@ -55,6 +56,14 @@ public class User implements Serializable {
       this.email = email;
       this.username = username;
       this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+  }
+
+  public void changePw (String oldPW, String newPW) throws AuthenticationException {
+      if(BCrypt.checkpw(oldPW, this.userPass)){
+          this.userPass = BCrypt.hashpw(newPW, BCrypt.gensalt(12));
+      }else{
+          throw new AuthenticationException("Passwords dont match!");
+      }
   }
 
     public String getEmail() {
