@@ -4,11 +4,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.JOSEException;
 import dto.UserDTO;
-import entities.User;
+import errorhandling.NotFound;
 import facades.UserFacade;
+import security.UserPrincipal;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
-
+import security.JWTAuthenticationFilter;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.*;
@@ -23,6 +24,7 @@ public class UserResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static JWTAuthenticationFilter jwt = new JWTAuthenticationFilter();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
 
@@ -39,8 +41,11 @@ public class UserResource {
     @RolesAllowed("user")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String getUser(String token) throws ParseException, JOSEException, AuthenticationException {
-        UserDTO userDTO = USER_FACADE.getUser(token);
+    public String getUser(@HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException, NotFound {
+
+        UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
+
+        UserDTO userDTO = USER_FACADE.getUser(user.getEmail());
 
         return GSON.toJson(userDTO);
     }

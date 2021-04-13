@@ -8,6 +8,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import errorhandling.NotFound;
 import security.JWTAuthenticationFilter;
 import security.UserPrincipal;
 import security.errorhandling.AuthenticationException;
@@ -50,12 +52,15 @@ public class UserFacade {
 
 
     }
-    public UserDTO getUser (String token) throws ParseException, JOSEException, AuthenticationException {
-        UserPrincipal userFromToken = jwt.getUserPrincipalFromTokenIfValid(token);
+    public UserDTO getUser (String email) throws NotFound {
+
         EntityManager em = emf.createEntityManager();
 
-        User user = em.find(User.class, userFromToken.getEmail());
+        User user = em.find(User.class, email);
 
+        if (user == null){
+            throw new NotFound("No user found");
+        }
 
         return new UserDTO(user);
     }
