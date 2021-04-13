@@ -57,8 +57,8 @@ public class UserResource {
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public String editUser(@HeaderParam("x-access-token") String token, String user) throws ParseException, JOSEException, AuthenticationException, NotFound, InputNotValid {
-        UserPrincipal userPrincipal = jwt.getUserPrincipalFromTokenIfValid(token);
 
+        UserPrincipal userPrincipal = jwt.getUserPrincipalFromTokenIfValid(token);
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         userDTO.setEmail(userPrincipal.getEmail());
         UserDTO edditedUser = USER_FACADE.editUser(userDTO);
