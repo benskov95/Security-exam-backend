@@ -45,9 +45,7 @@ public class UserResource {
     public String getUser(@HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException, NotFound {
 
         UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
-
         UserDTO userDTO = USER_FACADE.getUser(user.getEmail());
-
         return GSON.toJson(userDTO);
     }
 
