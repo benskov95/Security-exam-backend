@@ -59,7 +59,8 @@ public class UserResource {
         UserPrincipal userPrincipal = jwt.getUserPrincipalFromTokenIfValid(token);
 
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
-        UserDTO edditedUser = USER_FACADE.editUser(userPrincipal.getEmail(), userDTO);
+        userDTO.setEmail(userPrincipal.getEmail());
+        UserDTO edditedUser = USER_FACADE.editUser(userDTO);
 
         return GSON.toJson(edditedUser);
     }
@@ -84,11 +85,11 @@ public class UserResource {
     }
 
     @DELETE
-    @Path("{userName}")
+    @Path("{email}")
     @Produces({MediaType.APPLICATION_JSON})
     @RolesAllowed("admin")
-    public String deletePerson(@PathParam("userName") String userName) {
-        UserDTO userDTO = USER_FACADE.deleteUser(userName);
+    public String deleteUser(@PathParam("email") String email) {
+        UserDTO userDTO = USER_FACADE.deleteUser(email);
 
         return GSON.toJson(userDTO);
     }

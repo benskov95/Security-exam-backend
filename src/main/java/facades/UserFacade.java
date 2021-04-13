@@ -8,15 +8,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-
 import errorhandling.NotFound;
 import security.JWTAuthenticationFilter;
-import security.UserPrincipal;
 import security.errorhandling.AuthenticationException;
-
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class UserFacade {
 
@@ -160,21 +157,24 @@ public class UserFacade {
         return em.find(Role.class,"user");
     }
 
-    public UserDTO editUser(String email, UserDTO userDTO) throws AuthenticationException, NotFound {
+    public UserDTO editUser(UserDTO userDTO) throws AuthenticationException, NotFound {
         EntityManager em = emf.createEntityManager();
 
-        User user = em.find(User.class,email);
+        User user = em.find(User.class,userDTO.getEmail());
         if (user == null){
             throw new NotFound("User not found");
         }
 
         user.setUsername(userDTO.getUsername());
 
-        checkIfUsernameExists(user.getUsername(), em);
-
-        if(!userDTO.getPassword().equals("")){
-            user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
+        if(!userDTO.getUsername().equals(user.getUsername()) ) {
+            checkIfUsernameExists(user.getUsername(), em);
         }
+
+        if(userDTO.getPassword() != null){
+            if(!userDTO.getPassword().equals("")){
+            user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
+        }}
 
         try {
             em.getTransaction().begin();
@@ -185,6 +185,11 @@ public class UserFacade {
             em.close();
 
         }
+
+    }
+
+
+    public void validateInput (UserDTO userDTO){
 
     }
 }
