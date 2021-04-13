@@ -105,6 +105,7 @@ public class UserFacade {
     public UserDTO addUser (UserDTO userDTO) throws AuthenticationException, InputNotValid {
 
         validateInput(userDTO);
+        validatePw(userDTO.getPassword());
 
         EntityManager em = emf.createEntityManager();
         User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword());
@@ -182,7 +183,8 @@ public class UserFacade {
 
         if(userDTO.getPassword() != null){
             if(!userDTO.getPassword().equals("")){
-            user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
+                validatePw(userDTO.getPassword());
+                user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
         }}
 
         try {
@@ -190,11 +192,23 @@ public class UserFacade {
             em.persist(user);
             em.getTransaction().commit();
             return new UserDTO(user);
-        }finally {
+        }
+        finally {
             em.close();
 
         }
 
+    }
+
+    public void validatePw (String pw) throws InputNotValid {
+
+        Pattern patternPw = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$");
+        Matcher matcherPw = patternPw.matcher(pw);
+        boolean isPWOk = matcherPw.find();
+
+        if(!isPWOk){
+            throw new InputNotValid("Your password must be minimum 8 characters, containing at least 1 uppercase and lowercase letter and at least 1 number.");
+        }
     }
 
 
@@ -204,9 +218,6 @@ public class UserFacade {
         Matcher matcherEmail = patternEmail.matcher(userDTO.getEmail());
         boolean isEmailOk = matcherEmail.find();
 
-        Pattern patternPw = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$");
-        Matcher matcherPw = patternPw.matcher(userDTO.getPassword());
-        boolean isPWOk = matcherPw.find();
 
         Pattern patternUsername = Pattern.compile("^(?=[a-zA-Z0-9._]{4,16}$)(?!.*[_.]{2})[^_.].*[^_.]$");
         Matcher matcherUsername = patternUsername.matcher(userDTO.getUsername());
@@ -216,9 +227,6 @@ public class UserFacade {
             throw new InputNotValid("Invalid email!");
         }
 
-        if(!isPWOk){
-            throw new InputNotValid("Your password must be minimum 8 characters, containing at least 1 uppercase letter and at least 1 number.");
-        }
 
         if(!isUsernameOk){
             throw new InputNotValid("Your username must be between 4-16 characters long and consist only of alphanumeric characters " +

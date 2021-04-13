@@ -62,7 +62,7 @@ public class User implements Serializable {
       if(BCrypt.checkpw(oldPW, this.userPass)){
           this.userPass = BCrypt.hashpw(newPW, BCrypt.gensalt(12));
       }else{
-          throw new AuthenticationException("Invalid password");
+          throw new AuthenticationException("Old password is incorrect");
       }
   }
 
