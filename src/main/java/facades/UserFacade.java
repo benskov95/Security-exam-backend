@@ -8,11 +8,15 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+
+import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import security.JWTAuthenticationFilter;
 import security.errorhandling.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class UserFacade {
@@ -98,7 +102,9 @@ public class UserFacade {
 
     }
 
-    public UserDTO addUser (UserDTO userDTO) throws  AuthenticationException {
+    public UserDTO addUser (UserDTO userDTO) throws AuthenticationException, InputNotValid {
+
+        validateInput(userDTO);
 
         EntityManager em = emf.createEntityManager();
         User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword());
@@ -116,7 +122,7 @@ public class UserFacade {
         }
     }
 
-    private void checkIfExists(User user, EntityManager em) throws AuthenticationException {
+    private void checkIfExists(User user, EntityManager em) throws  InputNotValid {
 
         Query query = em.createQuery("SELECT u FROM User u WHERE u.username =:username OR u.email = :email");
         query.setParameter("username", user.getUsername()).setParameter("email", user.getEmail());
@@ -125,10 +131,10 @@ public class UserFacade {
 
         if(result.size() > 0){
             if(result.get(0).getEmail().equals(user.getEmail())) {
-                throw new AuthenticationException("This email is already in use!");
+                throw new InputNotValid("This email is already in use!");
             }
             if( result.get(0).getUsername().equals(user.getUsername())) {
-                throw new AuthenticationException("This username is already in use!");
+                throw new InputNotValid("This username is already in use!");
             }
         }
     }
@@ -157,7 +163,10 @@ public class UserFacade {
         return em.find(Role.class,"user");
     }
 
-    public UserDTO editUser(UserDTO userDTO) throws AuthenticationException, NotFound {
+    public UserDTO editUser(UserDTO userDTO) throws AuthenticationException, NotFound, InputNotValid {
+
+        validateInput(userDTO);
+
         EntityManager em = emf.createEntityManager();
 
         User user = em.find(User.class,userDTO.getEmail());
@@ -189,7 +198,32 @@ public class UserFacade {
     }
 
 
-    public void validateInput (UserDTO userDTO){
+    public void validateInput (UserDTO userDTO) throws InputNotValid {
+
+        Pattern patternEmail = Pattern.compile("^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$");
+        Matcher matcherEmail = patternEmail.matcher(userDTO.getEmail());
+        boolean isEmailOk = matcherEmail.find();
+
+        Pattern patternPw = Pattern.compile("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,16}$");
+        Matcher matcherPw = patternPw.matcher(userDTO.getPassword());
+        boolean isPWOk = matcherPw.find();
+
+        Pattern patternUsername = Pattern.compile("^(?=[a-zA-Z0-9._]{4,16}$)(?!.*[_.]{2})[^_.].*[^_.]$");
+        Matcher matcherUsername = patternUsername.matcher(userDTO.getUsername());
+        boolean isUsernameOk = matcherUsername.find();
+
+        if(!isEmailOk){
+            throw new InputNotValid("Invalid email!");
+        }
+
+        if(!isPWOk){
+            throw new InputNotValid("Your password must be minimum 8 characters, containing at least 1 uppercase letter and at least 1 number.");
+        }
+
+        if(!isUsernameOk){
+            throw new InputNotValid("Your username must be between 4-16 characters long and consist only of alphanumeric characters " +
+                                   "( underscores and periods are allowed, but not at the start or the end of the username )");
+        }
 
     }
 }

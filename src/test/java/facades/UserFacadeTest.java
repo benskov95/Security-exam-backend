@@ -3,6 +3,7 @@ package facades;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
+import errorhandling.InputNotValid;
 import org.junit.jupiter.api.*;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -90,7 +91,7 @@ public class UserFacadeTest {
     }
 
     @Test
-    public void testAddUser() throws AuthenticationException {
+    public void testAddUser() throws AuthenticationException, InputNotValid {
         User newUser = new User("test@mail.dk","Test", "Testtest");
         UserDTO userDTO = facade.addUser(new UserDTO(newUser));
 

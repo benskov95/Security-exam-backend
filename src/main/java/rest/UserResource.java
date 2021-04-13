@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.JOSEException;
 import dto.UserDTO;
+import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import facades.UserFacade;
 import security.UserPrincipal;
@@ -55,7 +56,7 @@ public class UserResource {
     @RolesAllowed("user")
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String editUser(@HeaderParam("x-access-token") String token, String user) throws ParseException, JOSEException, AuthenticationException, NotFound {
+    public String editUser(@HeaderParam("x-access-token") String token, String user) throws ParseException, JOSEException, AuthenticationException, NotFound, InputNotValid {
         UserPrincipal userPrincipal = jwt.getUserPrincipalFromTokenIfValid(token);
 
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
@@ -69,7 +70,7 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addUser(String user) throws  AuthenticationException {
+    public String addUser(String user) throws AuthenticationException, InputNotValid {
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         UserDTO newUser = USER_FACADE.addUser(userDTO);
         return GSON.toJson(newUser);
