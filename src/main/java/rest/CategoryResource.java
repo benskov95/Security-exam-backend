@@ -21,7 +21,7 @@ public class CategoryResource {
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     public static final CategoryFacade CAT_FACADE = CategoryFacade.getCategoryFacade(EMF);
-            
+
 
     @GET
     @Produces({MediaType.APPLICATION_JSON})
@@ -29,17 +29,17 @@ public class CategoryResource {
         List<CategoryDTO> catDTOs = CAT_FACADE.getAllCategories();
         return GSON.toJson(catDTOs);
     }
-    
+
     @POST
     @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String addCategory(String category) throws AlreadyExists {
+    public String addCategory(String category) throws AlreadyExists{
         CategoryDTO catDTO = GSON.fromJson(category, CategoryDTO.class);
         CategoryDTO newCat = CAT_FACADE.addCategory(catDTO);
         return GSON.toJson(newCat);
     }
-    
+
     @DELETE
     @RolesAllowed("admin")
     @Path("/{id}")
@@ -48,7 +48,7 @@ public class CategoryResource {
         CategoryDTO delCatDTO = CAT_FACADE.deleteCategory(id);
         return GSON.toJson(delCatDTO);
     }
-    
+
     @PUT
     @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})

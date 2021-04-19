@@ -7,7 +7,7 @@
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="startcode-ca3-1.0.1.war">
+    <root id="archive" name="security-exam-1.0.1.war">
       <element id="artifact" artifact-name="startcode-ca3:war exploded" />
     </root>
   </artifact>

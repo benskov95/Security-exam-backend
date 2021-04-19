@@ -7,6 +7,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.mindrot.jbcrypt.BCrypt;
+import security.errorhandling.AuthenticationException;
 
 @Entity
 @NamedQuery (name = "User.deleteAllRows", query = "DELETE FROM User")
@@ -18,6 +19,9 @@ public class User implements Serializable {
   @Id
   @Basic(optional = false)
   @NotNull
+  @Column(name = "email", length = 25)
+  private String email;
+
   @Column(name = "user_name", length = 25)
   private String username;
 
@@ -26,28 +30,20 @@ public class User implements Serializable {
   @Size(min = 1, max = 255)
   @Column(name = "user_pass")
   private String userPass;
-  @JoinTable(name = "user_roles", joinColumns = {
-    @JoinColumn(name = "user_name", referencedColumnName = "user_name")}, inverseJoinColumns = {
+  @JoinTable(name = "user_role", joinColumns = {
+    @JoinColumn(name = "email", referencedColumnName = "email")}, inverseJoinColumns = {
     @JoinColumn(name = "role_name", referencedColumnName = "role_name")})
-  @ManyToMany (cascade = CascadeType.PERSIST)
-  private List<Role> roleList = new ArrayList<>();
-  
+  @ManyToOne (cascade = CascadeType.PERSIST)
+  private Role role;
+
   @OneToMany(mappedBy = "user")
   private List<CatThread> threads = new ArrayList<>();
-    
+
   @OneToMany(mappedBy = "user")
   private List<Post> posts = new ArrayList<>();
 
-  public List<String> getRolesAsStrings() {
-    if (roleList.isEmpty()) {
-      return null;
-    }
-    List<String> rolesAsStrings = new ArrayList<>();
-    roleList.forEach((role) -> {
-        rolesAsStrings.add(role.getRoleName());
-      });
-    return rolesAsStrings;
-  }
+
+
 
   public User() {}
 
@@ -56,13 +52,29 @@ public class User implements Serializable {
        return(matches);
     }
 
-  public User(String username, String userPass) {
-    this.username = username;
-    this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+  public User(String email,String username, String userPass) {
+      this.email = email;
+      this.username = username;
+      this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
   }
 
+  public void changePw (String oldPW, String newPW) throws AuthenticationException {
+      if(BCrypt.checkpw(oldPW, this.userPass)){
+          this.userPass = BCrypt.hashpw(newPW, BCrypt.gensalt(12));
+      }else{
+          throw new AuthenticationException("Old password is incorrect");
+      }
+  }
 
-  public String getUsername() {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getUsername() {
     return username;
   }
 
@@ -78,18 +90,13 @@ public class User implements Serializable {
     this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
   }
 
-  public List<Role> getRoleList() {
+    public Role getRole() {
+        return role;
+    }
 
-    return roleList;
-  }
-
-  public void setRoleList(List<Role> roleList) {
-    this.roleList = roleList;
-  }
-
-  public void addRole(Role userRole) {
-    roleList.add(userRole);
-  }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     public List<CatThread> getThreads() {
         return threads;

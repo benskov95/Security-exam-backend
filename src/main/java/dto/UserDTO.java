@@ -6,15 +6,17 @@ import java.util.List;
 
 public class UserDTO {
 
+    private String email;
     private String username;
-    private List<String> roles;
+    private String role;
     private String password;
-
+    private String oldPassword;
 
     public UserDTO(User user) {
+        this.email = user.getEmail();
         this.username = user.getUsername();
-        this.roles = user.getRolesAsStrings();
     }
+
 
     public UserDTO(){}
 
@@ -26,6 +28,13 @@ public class UserDTO {
         this.password = password;
     }
 
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
 
     public String getUsername() {
         return username;
@@ -35,11 +44,20 @@ public class UserDTO {
         this.username = username;
     }
 
-    public List<String> getRoles() {
-        return roles;
+
+    public String getEmail() {
+        return email;
     }
 
-    public void setRoles(List<String> roles) {
-        this.roles = roles;
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

@@ -3,26 +3,21 @@ package facades;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
+import errorhandling.InputNotValid;
+import org.junit.jupiter.api.*;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 //Uncomment the line below, to temporarily disable this test
-//@Disabled
+@Disabled
 public class UserFacadeTest {
 
     private static EntityManagerFactory emf;
@@ -49,24 +44,23 @@ public class UserFacadeTest {
     @BeforeEach
     public void setUp() {
         EntityManager em = emf.createEntityManager();
-        user = new User("user", "test123");
-        admin = new User("admin", "test123");
-        both = new User("user_admin", "test123");
+        user = new User("test@mail.dk","user", "test123");
+        admin = new User("test@mail.dk","admin", "test123");
+        both = new User("test@mail.dk","user_admin", "test123");
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Roles.deleteAllRows").executeUpdate();
             em.createNamedQuery("User.deleteAllRows").executeUpdate();
             Role userRole = new Role("user");
             Role adminRole = new Role("admin");
-            user.addRole(userRole);
-            admin.addRole(adminRole);
-            both.addRole(userRole);
-            both.addRole(adminRole);
+            user.setRole(userRole);
+            admin.setRole(adminRole);
+
             em.persist(userRole);
             em.persist(adminRole);
             em.persist(user);
             em.persist(admin);
-            em.persist(both);
+
             em.getTransaction().commit();
 
         } finally {
@@ -97,8 +91,8 @@ public class UserFacadeTest {
     }
 
     @Test
-    public void testAddUser() throws AuthenticationException {
-        User newUser = new User("Test", "Testtest");
+    public void testAddUser() throws AuthenticationException, InputNotValid {
+        User newUser = new User("test@mail.dk","Test", "Testtest");
         UserDTO userDTO = facade.addUser(new UserDTO(newUser));
 
         List<UserDTO> userDTOList = facade.getAllUsers();
