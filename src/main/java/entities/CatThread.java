@@ -33,8 +33,9 @@ public class CatThread implements Serializable {
     public CatThread() {
     }
 
-    public CatThread(String title, Category category) {
+    public CatThread(String title, User user, Category category) {
         this.title = title;
+        this.user = user;
         this.category = category;
     }
 

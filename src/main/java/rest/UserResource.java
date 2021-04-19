@@ -19,7 +19,7 @@ import java.text.ParseException;
 import java.util.List;
 
 
-@Path("users")
+@Path("user")
 public class UserResource {
 
 
@@ -39,7 +39,7 @@ public class UserResource {
     }
     @GET
     @Path("me")
-    @RolesAllowed("user")
+    @RolesAllowed({"user", "admin", "moderator"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public String getUser(@HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException, NotFound {
@@ -51,7 +51,7 @@ public class UserResource {
 
     @PUT
     @Path("me")
-    @RolesAllowed("user")
+    @RolesAllowed({"user", "admin", "moderator"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public String editUser(@HeaderParam("x-access-token") String token, String user) throws ParseException, JOSEException, AuthenticationException, NotFound, InputNotValid {
@@ -89,7 +89,6 @@ public class UserResource {
     @RolesAllowed("admin")
     public String deleteUser(@PathParam("email") String email) {
         UserDTO userDTO = USER_FACADE.deleteUser(email);
-
         return GSON.toJson(userDTO);
     }
 

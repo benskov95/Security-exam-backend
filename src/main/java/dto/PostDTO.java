@@ -9,13 +9,13 @@ public class PostDTO {
     private String user;
     private String content;
     private Date postedOn;
-    private ThreadDTO thread;
+    private int threadId;
 
     public PostDTO(Post post) {
         this.id = post.getId();
         this.user = post.getUser().getUsername();
         this.content = post.getContent();
-        this.thread = new ThreadDTO(post.getCatThread());
+        this.threadId = post.getCatThread().getId();
         this.postedOn = post.getPostedOn();
     }
 
@@ -51,12 +51,12 @@ public class PostDTO {
         this.postedOn = postedOn;
     }
 
-    public ThreadDTO getThread() {
-        return thread;
+    public int getThreadId() {
+        return threadId;
     }
 
-    public void setThread(ThreadDTO thread) {
-        this.thread = thread;
+    public void setThreadId(int threadId) {
+        this.threadId = threadId;
     }
     
 }

@@ -53,9 +53,9 @@ public class CategoryResource {
     @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
-    public String updateCategory(String category) throws errorhandling.NotFound {
+    public String editCategory(String category) throws errorhandling.NotFound, AlreadyExists {
         CategoryDTO catDTO = GSON.fromJson(category, CategoryDTO.class);
-        CategoryDTO editedDTO = CAT_FACADE.updateCategory(catDTO);
+        CategoryDTO editedDTO = CAT_FACADE.editCategory(catDTO);
         return GSON.toJson(editedDTO);
     }
 }

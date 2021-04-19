@@ -1,6 +1,5 @@
 package facades;
 
-import com.nimbusds.jose.JOSEException;
 import dto.UserDTO;
 import entities.Role;
 import entities.User;
@@ -12,7 +11,6 @@ import javax.persistence.TypedQuery;
 
 import errorhandling.InputNotValid;
 import errorhandling.NotFound;
-import security.JWTAuthenticationFilter;
 import security.errorhandling.AuthenticationException;
 
 import java.util.ArrayList;
@@ -25,7 +23,6 @@ public class UserFacade {
 
     private static EntityManagerFactory emf;
     private static UserFacade instance;
-    private static JWTAuthenticationFilter jwt;
 
     private UserFacade() {
     }

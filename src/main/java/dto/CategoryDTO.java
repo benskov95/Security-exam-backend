@@ -1,10 +1,6 @@
 package dto;
 
-import entities.CatThread;
 import entities.Category;
-import java.util.ArrayList;
-import java.util.List;
-
 public class CategoryDTO {
     
     private int id;

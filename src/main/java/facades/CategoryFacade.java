@@ -71,13 +71,18 @@ public class CategoryFacade {
         }
     }
     
-    public CategoryDTO updateCategory(CategoryDTO catDTO) throws NotFound {
+    public CategoryDTO editCategory(CategoryDTO catDTO) throws NotFound, AlreadyExists {
         EntityManager em = emf.createEntityManager();
         Category cat = em.find(Category.class, catDTO.getId());
         isNotNull(cat);
-        cat.setName(catDTO.getName());
+        
+        if (!catDTO.getName().equals(cat.getName())) {
+        checkIfExists(em, catDTO);
+        }
+        
         try {
             em.getTransaction().begin();
+            cat.setName(catDTO.getName());
             em.persist(cat);
             em.getTransaction().commit();
             return new CategoryDTO(cat);
