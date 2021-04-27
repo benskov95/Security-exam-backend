@@ -100,7 +100,7 @@ public class UserFacade {
 
     }
 
-    public UserDTO addUser(UserDTO userDTO) throws AuthenticationException, InputNotValid {
+    public UserDTO addUser(UserDTO userDTO) throws  InputNotValid {
 
         validateInput(userDTO);
         validatePw(userDTO.getPassword());
@@ -232,5 +232,42 @@ public class UserFacade {
                     "( underscores and periods are allowed, but not at the start or the end of the username )");
         }
 
+    }
+
+    public UserDTO promoteUser (String email){
+        EntityManager em = emf.createEntityManager();
+
+        User user = em.find(User.class,email);
+        Role role = em.find(Role.class, "moderator");
+
+        user.setRole(role);
+
+        try{
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            return new UserDTO(user);
+        }finally {
+            em.close();
+
+        }
+    }
+    public UserDTO demoteUser (String email){
+        EntityManager em = emf.createEntityManager();
+
+        User user = em.find(User.class,email);
+        Role role = em.find(Role.class, "user");
+
+        user.setRole(role);
+
+        try{
+            em.getTransaction().begin();
+            em.persist(user);
+            em.getTransaction().commit();
+            return new UserDTO(user);
+        }finally {
+            em.close();
+
+        }
     }
 }

@@ -68,7 +68,7 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addUser(String user) throws AuthenticationException, InputNotValid {
+    public String addUser(String user) throws InputNotValid {
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         UserDTO newUser = USER_FACADE.addUser(userDTO);
         return GSON.toJson(newUser);
@@ -89,6 +89,28 @@ public class UserResource {
     @RolesAllowed("admin")
     public String deleteUser(@PathParam("email") String email) {
         UserDTO userDTO = USER_FACADE.deleteUser(email);
+        return GSON.toJson(userDTO);
+    }
+
+    @PUT
+    @RolesAllowed("admin")
+    @Path("/promote/{email}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String promoteUser (@PathParam("email") String email) {
+
+        UserDTO userDTO = USER_FACADE.promoteUser(email);
+
+        return GSON.toJson(userDTO);
+    }
+
+    @PUT
+    @RolesAllowed("admin")
+    @Path("/demote/{email}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String demoteUser (@PathParam("email") String email) {
+
+        UserDTO userDTO = USER_FACADE.demoteUser(email);
+
         return GSON.toJson(userDTO);
     }
 
