@@ -10,24 +10,25 @@ public class ThreadDTO {
     private int id;
     private String title;
     private List<PostDTO> posts;
+    private int nPosts;
     private CategoryDTO category;
     private String user;
 
     public ThreadDTO(CatThread thread) {
         this.id = thread.getId();
         this.title = thread.getTitle();
-        this.posts = postsToDTO(thread.getPosts());
+        this.nPosts = thread.getPosts().size();
         this.category = new CategoryDTO(thread.getCategory());
         this.user = thread.getUser().getUsername();
     }
     
-    private List<PostDTO> postsToDTO(List<Post> posts) {
-        List<PostDTO> postDTOs = new ArrayList<>();
-        for (Post post : posts) {
-            postDTOs.add(new PostDTO(post));
-        }
-        return postDTOs;
-    }
+//    private List<PostDTO> postsToDTO(List<Post> posts) {
+//        List<PostDTO> postDTOs = new ArrayList<>();
+//        for (Post post : posts) {
+//            postDTOs.add(new PostDTO(post));
+//        }
+//        return postDTOs;
+//    }
 
     public int getId() {
         return id;
@@ -51,6 +52,14 @@ public class ThreadDTO {
 
     public void setPosts(List<PostDTO> posts) {
         this.posts = posts;
+    }
+
+    public int getnPosts() {
+        return nPosts;
+    }
+
+    public void setnPosts(int nPosts) {
+        this.nPosts = nPosts;
     }
 
     public CategoryDTO getCategory() {
