@@ -25,7 +25,7 @@ public class UserResource {
 
     private static final EntityManagerFactory EMF = EMF_Creator.createEntityManagerFactory();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
-    private static JWTAuthenticationFilter jwt = new JWTAuthenticationFilter();
+    private static final JWTAuthenticationFilter jwt = new JWTAuthenticationFilter();
     public static final UserFacade USER_FACADE = UserFacade.getUserFacade(EMF);
 
 
