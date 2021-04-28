@@ -58,6 +58,7 @@ public class PostFacade {
         threadExists(thread);
         
         Post post = new Post(thread, user, postDTO.getContent());
+        thread.getPosts().add(post);
         
         try {
             em.getTransaction().begin();
