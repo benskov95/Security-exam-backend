@@ -59,9 +59,9 @@ public class UserResource {
         UserPrincipal userPrincipal = jwt.getUserPrincipalFromTokenIfValid(token);
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         userDTO.setEmail(userPrincipal.getEmail());
-        UserDTO edditedUser = USER_FACADE.editUser(userDTO);
+        UserDTO editedUser = USER_FACADE.editUser(userDTO);
 
-        return GSON.toJson(edditedUser);
+        return GSON.toJson(editedUser);
     }
 
 
