@@ -7,6 +7,8 @@ public class PostDTO {
     
     private int id;
     private String user;
+    private String role;
+    private String userImage;
     private String content;
     private Date postedOn;
     private int threadId;
@@ -14,6 +16,8 @@ public class PostDTO {
     public PostDTO(Post post) {
         this.id = post.getId();
         this.user = post.getUser().getUsername();
+        this.role = post.getUser().getRole().getRoleName();
+        this.userImage = post.getUser().getImageUrl();
         this.content = post.getContent();
         this.threadId = post.getCatThread().getId();
         this.postedOn = post.getPostedOn();
@@ -33,6 +37,22 @@ public class PostDTO {
 
     public void setUser(String user) {
         this.user = user;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 
     public String getContent() {

@@ -76,6 +76,9 @@ public class PostFacade {
         postExists(post);
         verifyPostOwnership(post.getUser().getEmail(), email, "delete");
         
+        CatThread thread = post.getCatThread();
+        thread.getPosts().remove(post);
+        
         try {
             em.getTransaction().begin();
             em.remove(post);
@@ -90,6 +93,9 @@ public class PostFacade {
         EntityManager em = emf.createEntityManager();
         Post post = em.find(Post.class, postId);
         postExists(post);
+        
+        CatThread thread = post.getCatThread();
+        thread.getPosts().remove(post);
         
         try {
             em.getTransaction().begin();

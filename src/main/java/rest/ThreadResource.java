@@ -43,6 +43,14 @@ public class ThreadResource {
         return GSON.toJson(threadDTOs);
     }
     
+    @GET
+    @Path("info/{id}")
+    @Produces({MediaType.APPLICATION_JSON})
+    public String getThreadById(@PathParam("id") int id) throws NotFound {
+        ThreadDTO threadDTO = THREAD_FACADE.getThreadById(id);
+        return GSON.toJson(threadDTO);
+    }
+    
     @POST
     @RolesAllowed({"user", "admin", "moderator"})
     @Consumes({MediaType.APPLICATION_JSON})
