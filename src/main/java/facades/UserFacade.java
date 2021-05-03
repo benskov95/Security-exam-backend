@@ -186,6 +186,8 @@ public class UserFacade {
                 user.changePw(userDTO.getOldPassword(), userDTO.getPassword());
             }
         }
+        
+        user.setImageUrl(userDTO.getImageUrl());
 
         try {
             em.getTransaction().begin();

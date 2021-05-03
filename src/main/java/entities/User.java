@@ -42,9 +42,8 @@ public class User implements Serializable {
   @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
   private List<Post> posts = new ArrayList<>();
 
-
-
-
+  private String imageUrl;
+  
   public User() {}
 
    public boolean verifyPassword(String pw){
@@ -56,6 +55,7 @@ public class User implements Serializable {
       this.email = email;
       this.username = username;
       this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
+      this.imageUrl = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
   }
 
   public void changePw (String oldPW, String newPW) throws AuthenticationException {
@@ -112,6 +112,14 @@ public class User implements Serializable {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
 }

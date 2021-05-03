@@ -69,6 +69,7 @@ public class LoginEndpoint {
             .claim("email", user.getEmail())
             .claim("username", user.getUsername())
             .claim("role", role.getRoleName())
+            .claim("imageUrl", user.getImageUrl())
             .claim("issuer", issuer)
             .issueTime(date)
             .expirationTime(new Date(date.getTime() + TOKEN_EXPIRE_TIME))

@@ -11,11 +11,13 @@ public class UserDTO {
     private String role;
     private String password;
     private String oldPassword;
+    private String imageUrl;
 
     public UserDTO(User user) {
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.role = user.getRole().getRoleName();
+        this.imageUrl = user.getImageUrl();
     }
 
     public UserDTO(){}
@@ -60,4 +62,13 @@ public class UserDTO {
     public void setRole(String role) {
         this.role = role;
     }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    
 }
