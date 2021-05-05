@@ -70,7 +70,7 @@ public class PostResource {
     @RolesAllowed({"user", "admin", "moderator"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String editPost(String post, @HeaderParam("x-access-token") String token) throws NotFound, ParseException, JOSEException, AuthenticationException {
+    public String editMyPost(String post, @HeaderParam("x-access-token") String token) throws NotFound, ParseException, JOSEException, AuthenticationException {
         UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
         PostDTO postDTO = GSON.fromJson(post, PostDTO.class);
         PostDTO editedDTO = POST_FACADE.editMyPost(postDTO, user.getEmail());

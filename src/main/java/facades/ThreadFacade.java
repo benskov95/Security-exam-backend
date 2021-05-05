@@ -53,19 +53,18 @@ public class ThreadFacade {
         }
     }
     
-    public ThreadDTO getThreadById(int threadId) throws NotFound {
-        EntityManager em = emf.createEntityManager();
+    public ThreadDTO getThreadById(int threadId) throws NotFound {   
+        EntityManager em = emf.createEntityManager();     
         
-        try {
-            CatThread thread = em.find(CatThread.class, threadId);
-            if (thread == null) {
-                throw new NotFound("Thread with the provided ID could not be found");
+        try {             
+            CatThread thread = em.find(CatThread.class, threadId);   
+            if (thread == null) {                 
+                throw new NotFound("Thread with the provided ID could not be found");             
             }
-            return new ThreadDTO(thread);
-        } finally {
-            em.close();
-        }
-        
+            return new ThreadDTO(thread);         
+        } finally {             
+            em.close();        
+        }              
     }
     
     public ThreadDTO addThread(ThreadDTO threadDTO, String email) throws NotFound, AlreadyExists {
