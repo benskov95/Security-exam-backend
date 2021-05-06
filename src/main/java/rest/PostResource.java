@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.nimbusds.jose.JOSEException;
 import dto.PostDTO;
+import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import facades.PostFacade;
 import security.errorhandling.AuthenticationException;
@@ -40,7 +41,7 @@ public class PostResource {
     @RolesAllowed({"user", "admin", "moderator"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String addPost(String post, @HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException, NotFound {
+    public String addPost(String post, @HeaderParam("x-access-token") String token) throws ParseException, JOSEException, AuthenticationException, NotFound, InputNotValid {
         UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
         PostDTO postDTO = GSON.fromJson(post, PostDTO.class);
         PostDTO newPost = POST_FACADE.addPost(postDTO, user.getEmail());
@@ -70,7 +71,7 @@ public class PostResource {
     @RolesAllowed({"user", "admin", "moderator"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
-    public String editMyPost(String post, @HeaderParam("x-access-token") String token) throws NotFound, ParseException, JOSEException, AuthenticationException {
+    public String editMyPost(String post, @HeaderParam("x-access-token") String token) throws NotFound, ParseException, JOSEException, AuthenticationException, InputNotValid {
         UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
         PostDTO postDTO = GSON.fromJson(post, PostDTO.class);
         PostDTO editedDTO = POST_FACADE.editMyPost(postDTO, user.getEmail());
