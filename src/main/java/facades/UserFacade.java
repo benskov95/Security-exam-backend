@@ -198,6 +198,16 @@ public class UserFacade {
             }
         }
         
+        if (!userDTO.getPhone().equals(user.getPhone())) {
+            Query q = em.createQuery("SELECT u FROM User u WHERE u.phone = :phone");
+            q.setParameter("phone", userDTO.getPhone());
+            if (q.getResultList().size() > 0) {
+                throw new InputNotValid("This phone number is already in use.");
+            } else {
+                user.setPhone(userDTO.getPhone());
+            }
+        }
+        
         user.setImageUrl(userDTO.getImageUrl());
 
         try {

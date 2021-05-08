@@ -82,6 +82,7 @@ public class AuthEndpoint {
                 .claim("email", user.getEmail())
                 .claim("username", user.getUsername())
                 .claim("role", role.getRoleName())
+                .claim("phone", user.getPhone())
                 .claim("imageUrl", user.getImageUrl())
                 .claim("issuer", issuer)
                 .issueTime(date)
