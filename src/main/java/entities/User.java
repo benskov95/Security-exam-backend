@@ -16,6 +16,7 @@ public class User implements Serializable {
 
 
   private static final long serialVersionUID = 1L;
+
   @Id
   @Basic(optional = false)
   @NotNull
@@ -24,6 +25,12 @@ public class User implements Serializable {
 
   @Column(name = "user_name", length = 25)
   private String username;
+
+  @Column(name = "auth", length = 25)
+  private String auth;
+
+  @Column(name = "phone", length = 25)
+  private String phone;
 
   @Basic(optional = false)
   @NotNull
@@ -51,11 +58,13 @@ public class User implements Serializable {
        return(matches);
     }
 
-  public User(String email,String username, String userPass) {
+  public User(String email, String username, String userPass, String phone) {
       this.email = email;
       this.username = username;
       this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
       this.imageUrl = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
+      this.phone = phone;
+      this.auth = "";
   }
 
   public void changePw (String oldPW, String newPW) throws AuthenticationException {
@@ -65,6 +74,14 @@ public class User implements Serializable {
           throw new AuthenticationException("Old password is incorrect");
       }
   }
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getAuth() { return auth; }
+
+    public void setAuth(String auth) { this.auth = auth; }
 
     public String getEmail() {
         return email;

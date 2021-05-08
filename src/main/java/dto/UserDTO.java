@@ -12,12 +12,14 @@ public class UserDTO {
     private String password;
     private String oldPassword;
     private String imageUrl;
+    private String phone;
 
     public UserDTO(User user) {
         this.email = user.getEmail();
         this.username = user.getUsername();
         this.role = user.getRole().getRoleName();
         this.imageUrl = user.getImageUrl();
+        this.phone = user.getPhone();
     }
 
     public UserDTO(){}
@@ -70,5 +72,9 @@ public class UserDTO {
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
-    
+
+    public String getPhone() { return phone; }
+
+    public void setPhone(String phone) { this.phone = phone; }
+
 }

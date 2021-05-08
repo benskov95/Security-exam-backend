@@ -4,6 +4,13 @@ import dto.UserDTO;
 import entities.Role;
 import entities.User;
 
+
+import java.io.DataOutputStream;
+import java.net.URL;
+import java.net.URLEncoder;
+import javax.net.ssl.HttpsURLConnection;
+
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
@@ -13,10 +20,14 @@ import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import security.errorhandling.AuthenticationException;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+
 
 
 public class UserFacade {
@@ -106,7 +117,7 @@ public class UserFacade {
         validatePw(userDTO.getPassword());
 
         EntityManager em = emf.createEntityManager();
-        User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword());
+        User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getPhone());
         addInitialRoles(em);
         user.setRole(getUserRole(em));
         checkIfExists(user, em);
@@ -235,6 +246,56 @@ public class UserFacade {
         }
 
     }
+    public Boolean authAdmin (String email) throws Exception{
+        EntityManager em = emf.createEntityManager();
+
+        User user = em.find(User.class,email);
+        Role role = user.getRole();
+
+        if (role.getRoleName().equals("admin")) {
+            int randomPIN = new Random().nextInt(900000) + 100000;
+            String generatedString = ""+randomPIN;
+            user.setAuth(generatedString);
+            System.out.println("User authcode = " + user.getAuth());
+
+            //int checksms = SendSMS(user.getPhone(), user.getAuth());
+            //System.out.println("SMS - Response " + checksms);
+            try {
+                em.getTransaction().begin();
+                em.persist(user);
+                em.getTransaction().commit();
+                return true;
+            } finally {
+                em.close();
+            }
+        }else{
+            return false;
+        }
+    }
+
+    public int SendSMS (String phone, String auth) throws Exception{
+        URL url = new URL("https://gatewayapi.com/rest/mtsms");
+        HttpsURLConnection con = (HttpsURLConnection) url.openConnection();
+        con.setDoOutput(true);
+
+        DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+        try {
+            wr.writeBytes(
+                    "token=x7Ci3ErzQ0yh1nzr9MaRa8s8bFn-xXliNNTuHHu9Z-X9Mp_xhopM14zW7LIxVnOo"
+                            + "&sender=" + URLEncoder.encode("BornIT", "UTF-8")
+                            + "&message=" + URLEncoder.encode("Din kode " + auth, "UTF-8")
+                            + "&recipients.0.msisdn=45"+phone
+            );
+            wr.close();
+            int responseCode = con.getResponseCode();
+            con.disconnect();
+            return responseCode;
+
+        } finally {
+            wr.close();
+            con.disconnect();
+        }
+    }
 
     public UserDTO promoteUser (String email){
         EntityManager em = emf.createEntityManager();
@@ -254,6 +315,8 @@ public class UserFacade {
 
         }
     }
+
+
     public UserDTO demoteUser (String email){
         EntityManager em = emf.createEntityManager();
 

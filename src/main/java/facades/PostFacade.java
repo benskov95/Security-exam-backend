@@ -50,6 +50,7 @@ public class PostFacade {
             em.close();
         }
     }
+
     
     public PostDTO addPost(PostDTO postDTO, String email) throws NotFound {
         EntityManager em = emf.createEntityManager();

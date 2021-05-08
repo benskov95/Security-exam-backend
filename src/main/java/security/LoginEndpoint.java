@@ -10,12 +10,16 @@ import com.nimbusds.jose.JWSSigner;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import dto.UserDTO;
 import entities.Role;
 import facades.UserFacade;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import entities.User;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -37,16 +41,25 @@ public class LoginEndpoint {
   @POST
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.APPLICATION_JSON)
-  public Response login(String jsonString) throws AuthenticationException {
+  public Response login(String jsonString) throws AuthenticationException, Exception {
     JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
     String email = json.get("email").getAsString();
     String password = json.get("password").getAsString();
-
     try {
       User user = USER_FACADE.getVerifiedUser(email, password);
+      Boolean checkadmin = USER_FACADE.authAdmin(user.getEmail());
+
       String token = createToken(user, user.getRole());
       JsonObject responseJson = new JsonObject();
-      responseJson.addProperty("token", token);
+
+      if(checkadmin == true){
+        System.out.println("2-factor authentication.");
+        responseJson.addProperty("user_id", user.getEmail());
+      }else{
+        System.out.println("This user doesn't require SMS.");
+        responseJson.addProperty("token", token);
+      }
+
       return Response.ok(new Gson().toJson(responseJson)).build();
 
     } catch (JOSEException | AuthenticationException ex) {
@@ -59,7 +72,6 @@ public class LoginEndpoint {
   }
 
   private String createToken(User user, Role role) throws JOSEException {
-
 
     String issuer = "BornIT";
 
