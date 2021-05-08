@@ -47,12 +47,12 @@ public class LoginEndpoint {
     String password = json.get("password").getAsString();
     try {
       User user = USER_FACADE.getVerifiedUser(email, password);
-      Boolean checkadmin = USER_FACADE.authAdmin(user.getEmail());
+      Boolean checkAdmin = USER_FACADE.authAdmin(user.getEmail());
 
       String token = createToken(user, user.getRole());
       JsonObject responseJson = new JsonObject();
 
-      if(checkadmin == true){
+      if(checkAdmin){
         System.out.println("2-factor authentication.");
         responseJson.addProperty("user_id", user.getEmail());
       }else{

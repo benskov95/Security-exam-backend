@@ -258,8 +258,8 @@ public class UserFacade {
             user.setAuth(generatedString);
             System.out.println("User authcode = " + user.getAuth());
 
-            //int checksms = SendSMS(user.getPhone(), user.getAuth());
-            //System.out.println("SMS - Response " + checksms);
+            int checksms = SendSMS(user.getPhone(), user.getAuth());
+            System.out.println("SMS - Response " + checksms);
             try {
                 em.getTransaction().begin();
                 em.persist(user);
