@@ -118,6 +118,8 @@
 
     <build>
        
+        <finalName>security-forum</finalName>
+        
         <plugins>
             <!-- Plugin used to deploy to remote server -->
             <plugin>
