@@ -5,6 +5,7 @@ import entities.CatThread;
 import entities.Category;
 import entities.Post;
 import entities.User;
+import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +53,13 @@ public class PostFacade {
     }
 
     
-    public PostDTO addPost(PostDTO postDTO, String email) throws NotFound {
+    public PostDTO addPost(PostDTO postDTO, String email) throws NotFound, InputNotValid {
         EntityManager em = emf.createEntityManager();
+        
+        if (postDTO.getContent().length() < 1) {
+            throw new InputNotValid("Post must consist of minimum 1 character.");
+        }
+        
         User user = em.find(User.class, email);
         CatThread thread = em.find(CatThread.class, postDTO.getThreadId());
         threadExists(thread);
@@ -108,8 +114,13 @@ public class PostFacade {
         }
     }
     
-    public PostDTO editMyPost(PostDTO postDTO, String email) throws NotFound, AuthenticationException {
+    public PostDTO editMyPost(PostDTO postDTO, String email) throws NotFound, AuthenticationException, InputNotValid {
         EntityManager em = emf.createEntityManager();
+        
+        if (postDTO.getContent().length() < 1) {
+            throw new InputNotValid("Post must consist of minimum 1 character.");
+        }
+        
         Post post = em.find(Post.class, postDTO.getId());
         postExists(post);
         verifyPostOwnership(post.getUser().getEmail(), email, "edit");
