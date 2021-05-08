@@ -244,8 +244,18 @@ public class UserFacade {
             throw new InputNotValid("Your username must be between 4-16 characters long and consist only of alphanumeric characters " +
                     "( underscores and periods are allowed, but not at the start or the end of the username )");
         }
-
+        
+        try {
+            int phone = Integer.parseInt(userDTO.getPhone());
+            String phoneCheck = Integer.toString(phone);
+            if (phoneCheck.length() != 8) {
+                throw new InputNotValid("Phone number must be exactly 8 digits.");
+            } 
+            } catch (Exception e) {
+                    throw new InputNotValid("Phone number must be exactly 8 digits and consist of numbers only.");
+        } 
     }
+    
     public Boolean authAdmin (String email) throws Exception{
         EntityManager em = emf.createEntityManager();
 
