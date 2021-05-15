@@ -117,7 +117,7 @@ public class UserFacade {
         validatePw(userDTO.getPassword());
 
         EntityManager em = emf.createEntityManager();
-        User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword(), userDTO.getPhone());
+        User user = new User(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword());
         addInitialRoles(em);
         user.setRole(getUserRole(em));
         checkIfExists(user, em);
@@ -198,16 +198,6 @@ public class UserFacade {
             }
         }
         
-        if (!userDTO.getPhone().equals(user.getPhone())) {
-            Query q = em.createQuery("SELECT u FROM User u WHERE u.phone = :phone");
-            q.setParameter("phone", userDTO.getPhone());
-            if (q.getResultList().size() > 0) {
-                throw new InputNotValid("This phone number is already in use.");
-            } else {
-                user.setPhone(userDTO.getPhone());
-            }
-        }
-        
         user.setImageUrl(userDTO.getImageUrl());
 
         try {
@@ -254,16 +244,6 @@ public class UserFacade {
             throw new InputNotValid("Your username must be between 4-16 characters long and consist only of alphanumeric characters " +
                     "( underscores and periods are allowed, but not at the start or the end of the username )");
         }
-        
-        try {
-            int phone = Integer.parseInt(userDTO.getPhone());
-            String phoneCheck = Integer.toString(phone);
-            if (phoneCheck.length() != 8) {
-                throw new InputNotValid("Phone number must be exactly 8 digits.");
-            } 
-            } catch (Exception e) {
-                    throw new InputNotValid("Phone number must be exactly 8 digits and consist of numbers only.");
-        } 
     }
     
     public Boolean authAdmin (String email) throws Exception{

@@ -58,13 +58,13 @@ public class User implements Serializable {
        return(matches);
     }
 
-  public User(String email, String username, String userPass, String phone) {
+  public User(String email, String username, String userPass) {
       this.email = email;
       this.username = username;
       this.userPass = BCrypt.hashpw(userPass, BCrypt.gensalt(12));
       this.imageUrl = "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg";
-      this.phone = phone;
-      this.auth = "";
+      this.phone = "None";
+      this.auth = "None";
   }
 
   public void changePw (String oldPW, String newPW) throws AuthenticationException {

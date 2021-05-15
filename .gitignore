@@ -4,7 +4,7 @@
 /nbproject/
 
 /src/main/java/utils/SetupTestUsers.java
-
+/src/main/java/utils/CaptchaSecret.java
 
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,windows,macos,netbeans
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,windows,macos,netbeans
