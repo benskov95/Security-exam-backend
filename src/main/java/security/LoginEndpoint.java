@@ -13,16 +13,12 @@ import com.nimbusds.jose.shaded.json.parser.JSONParser;
 import com.nimbusds.jose.shaded.json.parser.ParseException;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import dto.UserDTO;
 import entities.Role;
 import facades.UserFacade;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import entities.User;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
