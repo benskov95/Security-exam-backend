@@ -33,6 +33,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import javax.persistence.EntityManagerFactory;
+//import utils.CaptchaSecret;
 import utils.CaptchaSecret;
 import utils.EMF_Creator;
 
@@ -51,17 +52,17 @@ public class LoginEndpoint {
     String email = json.get("email").getAsString();
     String password = json.get("password").getAsString();
     String captchaToken;
-    
+
     try {
         captchaToken = json.get("captchaToken").getAsString();
     } catch(Exception e) {
         throw new AuthenticationException("Captcha verification failed. Please try again.");
     }
-    
+
     if (captchaToken != null && !verifyCaptcha(captchaToken)) {
         throw new AuthenticationException("Captcha verification failed. Please try again.");
     }
-    
+
     try {
       User user = USER_FACADE.getVerifiedUser(email, password);
       Boolean checkAdmin = USER_FACADE.authAdmin(user.getEmail());
@@ -70,10 +71,8 @@ public class LoginEndpoint {
       JsonObject responseJson = new JsonObject();
 
       if(checkAdmin){
-        System.out.println("2-factor authentication.");
         responseJson.addProperty("user_id", user.getEmail());
       }else{
-        System.out.println("This user doesn't require SMS.");
         responseJson.addProperty("token", token);
       }
 
@@ -108,8 +107,8 @@ public class LoginEndpoint {
     return signedJWT.serialize();
 
   }
-  
-  private boolean verifyCaptcha(String captchaToken) throws MalformedURLException, IOException, ParseException {
+
+    private boolean verifyCaptcha(String captchaToken) throws MalformedURLException, IOException, ParseException {
       if (captchaToken.length() > 1) {
         String url = "https://www.google.com/recaptcha/api/siteverify?secret=" + CaptchaSecret.SECRET_KEY + "&response=" + captchaToken;
         URL myUrl = new URL(url);
@@ -128,5 +127,5 @@ public class LoginEndpoint {
           return false;
       }
   }
-  
+
 }

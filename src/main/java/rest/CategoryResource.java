@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import dto.CategoryDTO;
 import errorhandling.AlreadyExists;
 import facades.CategoryFacade;
+import logs.Logged;
 import utils.EMF_Creator;
 
 import javax.annotation.security.RolesAllowed;
@@ -34,6 +35,7 @@ public class CategoryResource {
     @RolesAllowed("admin")
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
+    @Logged
     public String addCategory(String category) throws AlreadyExists{
         CategoryDTO catDTO = GSON.fromJson(category, CategoryDTO.class);
         CategoryDTO newCat = CAT_FACADE.addCategory(catDTO);
@@ -43,6 +45,7 @@ public class CategoryResource {
     @DELETE
     @RolesAllowed("admin")
     @Path("/{id}")
+    @Logged
     @Produces({MediaType.APPLICATION_JSON})
     public String deleteCategory(@PathParam("id") int id) throws errorhandling.NotFound {
         CategoryDTO delCatDTO = CAT_FACADE.deleteCategory(id);
@@ -51,6 +54,7 @@ public class CategoryResource {
 
     @PUT
     @RolesAllowed("admin")
+    @Logged
     @Consumes({MediaType.APPLICATION_JSON})
     @Produces({MediaType.APPLICATION_JSON})
     public String editCategory(String category) throws errorhandling.NotFound, AlreadyExists {

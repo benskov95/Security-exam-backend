@@ -7,6 +7,7 @@ import dto.UserDTO;
 import errorhandling.InputNotValid;
 import errorhandling.NotFound;
 import facades.UserFacade;
+import logs.Logged;
 import security.UserPrincipal;
 import security.errorhandling.AuthenticationException;
 import utils.EMF_Creator;
@@ -52,6 +53,7 @@ public class UserResource {
     @PUT
     @Path("me")
     @RolesAllowed({"user", "admin", "moderator"})
+    @Logged
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
     public String editUser(@HeaderParam("x-access-token") String token, String user) throws ParseException, JOSEException, AuthenticationException, NotFound, InputNotValid {
@@ -68,6 +70,7 @@ public class UserResource {
     @POST
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes({MediaType.APPLICATION_JSON})
+    @Logged
     public String addUser(String user) throws InputNotValid {
         UserDTO userDTO = GSON.fromJson(user, UserDTO.class);
         UserDTO newUser = USER_FACADE.addUser(userDTO);
@@ -87,6 +90,7 @@ public class UserResource {
     @Path("{email}")
     @Produces({MediaType.APPLICATION_JSON})
     @RolesAllowed("admin")
+    @Logged
     public String deleteUser(@PathParam("email") String email) {
         UserDTO userDTO = USER_FACADE.deleteUser(email);
         return GSON.toJson(userDTO);
@@ -96,6 +100,7 @@ public class UserResource {
     @RolesAllowed("admin")
     @Path("/promote/{email}")
     @Produces({MediaType.APPLICATION_JSON})
+    @Logged
     public String promoteUser (@PathParam("email") String email) {
 
         UserDTO userDTO = USER_FACADE.promoteUser(email);
@@ -106,6 +111,7 @@ public class UserResource {
     @PUT
     @RolesAllowed("admin")
     @Path("/demote/{email}")
+    @Logged
     @Produces({MediaType.APPLICATION_JSON})
     public String demoteUser (@PathParam("email") String email) {
 
