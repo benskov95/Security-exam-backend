@@ -33,7 +33,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import javax.net.ssl.HttpsURLConnection;
 import javax.persistence.EntityManagerFactory;
-//import utils.CaptchaSecret;
 import utils.CaptchaSecret;
 import utils.EMF_Creator;
 
