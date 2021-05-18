@@ -15,6 +15,8 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 
 
 @Logged
@@ -22,6 +24,9 @@ import java.util.logging.Logger;
 public class RequestLoggingFilter implements ContainerResponseFilter {
 
     private static final JWTAuthenticationFilter jwt = new JWTAuthenticationFilter();
+    
+    @Context
+     private HttpServletRequest servletRequest;
 
     @Override
     public void filter(ContainerRequestContext containerRequestContext, ContainerResponseContext containerResponseContext) throws IOException {
@@ -31,7 +36,7 @@ public class RequestLoggingFilter implements ContainerResponseFilter {
         if (token != null){
         try {
            UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
-           String info = "USER: " + user.getEmail()+ ", Host: "+ containerRequestContext.getHeaders().get("host") + ", METHOD: " + containerRequestContext.getMethod()
+           String info = "USER: " + user.getEmail()+ ", Remote address: "+ servletRequest.getRemoteAddr() + ", METHOD: " + containerRequestContext.getMethod()
                     + ", URL: " + containerRequestContext.getUriInfo().getAbsolutePath() + ", Response code: " + containerResponseContext.getStatus();
 
            Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.INFO, info);
