@@ -36,8 +36,10 @@ public class RequestLoggingFilter implements ContainerResponseFilter {
         if (token != null){
         try {
            UserPrincipal user = jwt.getUserPrincipalFromTokenIfValid(token);
-           String info = "USER: " + user.getEmail()+ ", Remote address: "+ servletRequest.getRemoteAddr() + ", METHOD: " + containerRequestContext.getMethod()
-                    + ", URL: " + containerRequestContext.getUriInfo().getAbsolutePath() + ", Response code: " + containerResponseContext.getStatus();
+           String info = "USER: " + user.getEmail() + 
+                            ", METHOD: " + containerRequestContext.getMethod() + 
+                            ", URL: " + containerRequestContext.getUriInfo().getAbsolutePath() + 
+                            ", Response code: " + containerResponseContext.getStatus();
 
            Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.INFO, info);
 
