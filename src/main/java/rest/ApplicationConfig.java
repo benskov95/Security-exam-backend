@@ -1,10 +1,19 @@
 package rest;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.core.Application;
 
 @javax.ws.rs.ApplicationPath("api")
 public class ApplicationConfig extends Application {
+
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put("jersey.config.server.wadl.disableWadl", "true");
+        return properties;
+    }
 
     @Override
     public Set<Class<?>> getClasses() {
@@ -26,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(security.errorhandling.AuthenticationExceptionMapper.class);
         resources.add(security.errorhandling.NotAuthorizedExceptionMapper.class);
         resources.add(logs.RequestLoggingFilter.class);
+
         return resources;
     }
 
