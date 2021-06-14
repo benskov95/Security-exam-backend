@@ -23,7 +23,7 @@ public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilt
       return;
     }
   }
-    
+
   // A preflight request is an OPTIONS request with an Origin header.
   private static boolean isPreflightRequest(ContainerRequestContext request) {
       return request.getHeaderString("Origin") != null  && request.getMethod().equalsIgnoreCase("OPTIONS");
@@ -42,11 +42,9 @@ public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilt
     if (isPreflightRequest(request)) {
         response.getHeaders().add("Access-Control-Allow-Credentials", "true");
         response.getHeaders().add("Access-Control-Allow-Methods","GET, POST, PUT, DELETE, OPTIONS, HEAD");
-          response.getHeaders().add("Access-Control-Allow-Headers",
-          // Whatever other non-standard/safe headers (see list above) 
-          // you want the client to be able to send to the server,
-          // put it in this list. And remove the ones you don't want.
-          "Origin, Accept, Content-Type, Authorization,x-access-token");
+        response.getHeaders().add("Access-Control-Allow-Headers", "Origin, Accept, Content-Type, Authorization,x-access-token");
+        response.getHeaders().add("Cache-Control", "no-store, no-cache");
+        response.getHeaders().add("Pragma", "no-cache");
     }
 
     /* Cross origin requests can be either simple requests or preflight request. We need to add this
