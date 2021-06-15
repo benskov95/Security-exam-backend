@@ -43,6 +43,14 @@ public class AuthEndpoint {
         JsonObject json = JsonParser.parseString(jsonString).getAsJsonObject();
         String authCode = json.get("auth").getAsString();
         String user_id = json.get("user_id").getAsString();
+        
+        // Cloudflare seems to add the name of a cookie to the user id, so it has to be removed
+        // before the database is checked.
+        if (user_id.contains(",")) {
+            String[] parts = user_id.split(",");
+            user_id = parts[0];
+        }
+        
         System.out.println("--------- NEW AUTH --------");
         System.out.println("User: "+ user_id);
         System.out.println("Authcode: "+ authCode);
